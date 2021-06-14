@@ -11,9 +11,9 @@ export default {
         method: "POST"
       })
         .then(response => {
-          const token = response.data.token;
+          const token = response.data.data.token;
           const staff = response.data.data;
-          localStorage.setItem("user_token", token);
+          localStorage.setItem("zion-ticket", token);
 
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
           commit("auth_success", token, staff);
@@ -21,30 +21,6 @@ export default {
         })
         .catch(err => {
           commit("auth_error");
-          localStorage.removeItem("user_token");
-          reject(err);
-        });
-    });
-  },
-
-  register({ commit }, user) {
-    return new Promise((resolve, reject) => {
-      commit("auth_request");
-      axios({
-        url: "/users/register",
-        data: user,
-        method: "POST"
-      })
-        .then(response => {
-          const token = response.data.token;
-          const user = response.data.data;
-          localStorage.setItem("user_token", token);
-          axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
-          commit("auth_success", token, user);
-          resolve(response);
-        })
-        .catch(err => {
-          commit("auth_error", err);
           localStorage.removeItem("user_token");
           reject(err);
         });
@@ -74,7 +50,7 @@ export default {
   logout({ commit }) {
     return new Promise((resolve, reject) => {
       commit("logout");
-      localStorage.removeItem("user_token");
+      localStorage.removeItem("zion-ticket");
       delete axios.defaults.headers.common["authorization"];
       resolve();
     });
