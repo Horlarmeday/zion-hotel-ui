@@ -37,6 +37,21 @@
                 </div>
                 <div class="wizard-label">
                   <div class="wizard-title">
+                    Payment
+                  </div>
+                  <div class="wizard-desc">
+                    Enter Customer Payment
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wizard-step" data-wizard-type="step">
+              <div class="wizard-wrapper">
+                <div class="wizard-number">
+                  3
+                </div>
+                <div class="wizard-label">
+                  <div class="wizard-title">
                     Completed
                   </div>
                   <div class="wizard-desc">
@@ -67,17 +82,24 @@
                     </div>
                     <div class="form-group">
                       <label>Customer</label>
-                      <select
+                      <v-select
                         v-validate="'required'"
                         data-vv-validate-on="blur"
+                        name="customer"
                         v-model="customer_id"
-                        class="form-control form-control-solid form-control-lg"
-                      >
-                        <option value=""></option>
-                      </select>
-                      <span class="form-text text-muted"
-                        >Please select customer</span
-                      >
+                        label="name"
+                        :reduce="
+                          customers => ({
+                            id: customers.id,
+                            name: customers.name,
+                            phone: customers.phone
+                          })
+                        "
+                        :options="customers"
+                      />
+                      <span class="text-danger text-sm">{{
+                        errors.first("customer")
+                      }}</span>
                     </div>
                     <div class="row">
                       <div class="col-xl-6">
@@ -86,10 +108,13 @@
                           <datepicker
                             input-class="form-control form-control-solid form-control-lg"
                             v-model="start_date"
+                            v-validate="'required'"
+                            data-vv-validate-on="change"
+                            name="start_date"
                           />
-                          <span class="form-text text-muted"
-                            >Please select start date.</span
-                          >
+                          <span class="text-danger text-sm">{{
+                            errors.first("start_date")
+                          }}</span>
                         </div>
                       </div>
                       <div class="col-xl-6">
@@ -98,10 +123,13 @@
                           <datepicker
                             input-class="form-control form-control-solid form-control-lg"
                             v-model="end_date"
+                            v-validate="'required'"
+                            data-vv-validate-on="change"
+                            name="end_date"
                           />
-                          <span class="form-text text-muted"
-                            >Please select end date.</span
-                          >
+                          <span class="text-danger text-sm">{{
+                            errors.first("end_date")
+                          }}</span>
                         </div>
                       </div>
                     </div>
@@ -111,13 +139,20 @@
                         v-validate="'required'"
                         data-vv-validate-on="blur"
                         v-model="room_id"
+                        name="room_id"
                         class="form-control form-control-solid form-control-lg"
+                        @change="selectPrice"
                       >
-                        <option value=""></option>
+                        <option
+                          :value="room"
+                          v-for="room in rooms"
+                          :key="room.id"
+                          >{{ room.title }}</option
+                        >
                       </select>
-                      <span class="form-text text-muted"
-                        >Please select room</span
-                      >
+                      <span class="text-danger text-sm">{{
+                        errors.first("room_id")
+                      }}</span>
                     </div>
                     <div class="form-group">
                       <label>Price</label>
@@ -128,46 +163,224 @@
                         readonly
                       />
                     </div>
+                    <div>
+                      <div class="form-group">
+                        <a
+                          class="font-size-h6"
+                          href="#"
+                          @click="toggleShowAddon"
+                        >
+                          <i class="flaticon2-plus-1 text-primary mr-2" />
+                          Addons</a
+                        >
+                        <div v-if="show_addons" class="checkbox-inline mt-2">
+                          <label
+                            class="checkbox"
+                            v-for="addon in addons"
+                            :key="addon.id"
+                          >
+                            <input
+                              type="checkbox"
+                              @change="addAddon(addon, $event)"
+                              :value="addon"
+                            />
+                            <span></span>
+                            {{ addon.name }} (₦{{ addon.price }})
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <!--end: Wizard Step 1-->
+
+                  <!--begin: Wizard Step 2-->
+                  <div class="pb-5" data-wizard-type="step-content">
+                    <div class="mb-10 font-weight-bold text-dark">
+                      Enter Payment
+                    </div>
+                    <div class="form-group">
+                      <label>Amount</label>
+                      <input
+                        v-validate="'required'"
+                        data-vv-validate-on="blur"
+                        type="number"
+                        class="form-control form-control-solid form-control-lg"
+                        placeholder="Enter Amount Paid"
+                        v-model="amount_paid"
+                        name="amount_paid"
+                      />
+                      <span class="text-danger text-sm">{{
+                        errors.first("amount_paid")
+                      }}</span>
+                    </div>
+                    <div class="form-group">
+                      <label>Mode of Payment</label>
+                      <select
+                        class="form-control form-control-solid form-control-lg"
+                        v-model="mode_of_payment"
+                        v-validate="'required'"
+                        name="mode_of_payment"
+                        data-vv-validate-on="blur"
+                      >
+                        <option value="Cash">Cash</option>
+                        <option value="Transfer">Transfer</option>
+                        <option value="POS">POS</option>
+                      </select>
+                      <span class="text-danger text-sm">{{
+                        errors.first("mode_of_payment")
+                      }}</span>
+                    </div>
+                  </div>
+                  <!--end: Wizard Step 2-->
 
                   <!--begin: Wizard Step 4-->
                   <div class="pb-5" data-wizard-type="step-content">
                     <div class="mb-10 font-weight-bold text-dark">
                       Review your Details and Submit
                     </div>
-                    <div class="border-bottom mb-5 pb-5">
-                      <div class="font-weight-bold mb-3">
-                        Your Account Details:
+
+                    <div>
+                      <!-- begin: Invoice-->
+                      <!-- begin: Invoice header-->
+                      <div class="row justify-content-center px-8 px-md-0 mx-0">
+                        <div class="col-md-10">
+                          <div
+                            class="d-flex justify-content-between flex-column flex-md-row"
+                          >
+                            <h1 class="display-4 font-weight-boldest mb-10">
+                              SUMMARY
+                            </h1>
+                          </div>
+                          <div class="border-bottom w-100"></div>
+                          <div class="d-flex justify-content-between pt-6">
+                            <div class="d-flex flex-column flex-root">
+                              <span class="font-weight-bolder mb-2"
+                                >CUSTOMER NAME</span
+                              >
+                              <span class="opacity-70">{{
+                                customer_id.name
+                              }}</span>
+                            </div>
+                            <div
+                              class="d-flex flex-column flex-root float-right"
+                            >
+                              <span class="font-weight-bolder mb-2"
+                                >PHONE NO.</span
+                              >
+                              <span class="opacity-70">{{
+                                customer_id.phone
+                              }}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="line-height-md">
-                        John Wick
-                        <br />
-                        Phone: +61412345678 <br />
-                        Email: johnwick@reeves.com
+                      <!-- end: Invoice header-->
+                      <!-- begin: Invoice body-->
+                      <div
+                        class="row justify-content-center py-8 px-8 py-md-10 px-md-0"
+                      >
+                        <div class="col-md-10">
+                          <div class="table-responsive">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th
+                                    class="pl-0 font-weight-bold text-muted text-uppercase"
+                                  >
+                                    Room
+                                  </th>
+                                  <th
+                                    class="text-right pr-0 font-weight-bold text-muted text-uppercase"
+                                  >
+                                    Amount
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-if="room_id" class="font-weight-boldest">
+                                  <td
+                                    class="border-0 pl-0 pt-7 d-flex align-items-center"
+                                  >
+                                    {{ room_id.title }}
+                                  </td>
+                                  <td
+                                    class="text-primary pr-0 pt-7 text-right align-middle"
+                                  >
+                                    {{ room_id.price.toLocaleString() }}
+                                  </td>
+                                </tr>
+                                <p v-if="pickedAddon.length">Addons</p>
+                                <tr
+                                  class="font-weight-boldest"
+                                  v-for="(add, i) in pickedAddon"
+                                  :key="i"
+                                >
+                                  <td
+                                    class="border-0 pl-0 pt-7 d-flex align-items-center"
+                                  >
+                                    {{ add.name }}
+                                  </td>
+                                  <td
+                                    class="text-primary pr-0 pt-7 text-right align-middle"
+                                  >
+                                    {{ add.price.toLocaleString() }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div class="border-bottom mb-5 pb-5">
-                      <div class="font-weight-bold mb-3">
-                        Your Address Details:
+                      <!-- end: Invoice body-->
+                      <!-- begin: Invoice footer-->
+                      <div
+                        class="row justify-content-center bg-gray-100 py-8 px-8 py-md-10 px-md-0 mx-0"
+                      >
+                        <div class="col-md-10">
+                          <div class="table-responsive">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th
+                                    class="font-weight-bold text-muted text-uppercase"
+                                  >
+                                    PAYMENT METHOD
+                                  </th>
+                                  <th
+                                    class="font-weight-bold text-muted text-uppercase"
+                                  >
+                                    TOTAL PAID
+                                  </th>
+                                  <th
+                                    class="font-weight-bold text-muted text-uppercase"
+                                  >
+                                    AMOUNT DUE
+                                  </th>
+                                  <th
+                                    class="font-weight-bold text-muted text-uppercase text-right"
+                                  >
+                                    AMOUNT REMAINING
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr class="font-weight-bolder">
+                                  <td>{{ mode_of_payment }}</td>
+                                  <td>{{ amount_paid.toLocaleString() }}</td>
+                                  <td>{{ totalDue.toLocaleString() }}</td>
+                                  <td
+                                    class="text-primary font-size-h3 font-weight-boldest text-right"
+                                  >
+                                    {{ amountRemaining.toLocaleString() }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                       </div>
-                      <div class="line-height-md">
-                        Address Line 1
-                        <br />
-                        Address Line 2 <br />
-                        Melbourne 3000, VIC, Australia
-                      </div>
-                    </div>
-                    <div class="mb-5">
-                      <div class="font-weight-bold mb-3">
-                        Payment Details:
-                      </div>
-                      <div class="line-height-md">
-                        Card Number: xxxx xxxx xxxx 1111
-                        <br />
-                        Card Name: John Wick <br />
-                        Card Expiry: 01/21
-                      </div>
+                      <!-- end: Invoice footer-->
+                      <!-- end: Invoice-->
                     </div>
                   </div>
                   <!--end: Wizard Step 4-->
@@ -184,9 +397,11 @@
                     </div>
                     <div>
                       <button
-                        v-on:click="submit"
+                        ref="kt_booking_submit"
+                        v-on:click="createBooking"
                         class="btn btn-success font-weight-bold text-uppercase px-9 py-4"
                         data-wizard-type="action-submit"
+                        :disabled="isDisabled"
                       >
                         Submit
                       </button>
@@ -217,17 +432,27 @@ import KTUtil from "@/assets/js/components/util";
 import KTWizard from "@/assets/js/components/wizard";
 import Swal from "sweetalert2";
 import Datepicker from "vuejs-datepicker";
+import vSelect from "vue-select";
+import { arrayRemove } from "../../../helper";
+
 export default {
   name: "CreateBooking",
   components: {
-    Datepicker
+    Datepicker,
+    vSelect
   },
   data() {
     return {
       customer_id: "",
       room_id: "",
       start_date: "",
-      end_date: ""
+      price: "",
+      end_date: "",
+      amount_paid: "",
+      mode_of_payment: "",
+      show_addons: false,
+      isDisabled: false,
+      pickedAddon: []
     };
   },
   mounted() {
@@ -238,9 +463,9 @@ export default {
     });
 
     // Validation before going to next page
-    wizard.on("beforeNext", function(/*wizardObj*/) {
+    wizard.on("beforeNext", function(wizardObj) {
       // validate the form and use below function to stop the wizard's step
-      // wizardObj.stop();
+      wizardObj.stop();
     });
 
     // Change event
@@ -250,16 +475,126 @@ export default {
       }, 500);
     });
   },
+  computed: {
+    addons() {
+      return this.$store.state.addon.addons;
+    },
+    customers() {
+      return this.$store.state.customer.customers;
+    },
+    rooms() {
+      return this.$store.state.room.rooms;
+    },
+    addonsTotal() {
+      return this.pickedAddon
+        .map(addon => +addon.price)
+        .reduce((a, b) => a + b, 0);
+    },
+    totalDue() {
+      return +this.room_id.price + this.addonsTotal;
+    },
+    amountRemaining() {
+      return +this.totalDue - +this.amount_paid;
+    }
+  },
   methods: {
-    submit(e) {
-      e.preventDefault();
+    addSpinner(submitButton) {
+      this.isDisabled = true;
+      submitButton.classList.add("spinner", "spinner-light", "spinner-right");
+    },
+
+    removeSpinner(submitButton) {
+      this.isDisabled = false;
+      submitButton.classList.remove(
+        "spinner",
+        "spinner-light",
+        "spinner-right"
+      );
+    },
+    popUp() {
       Swal.fire({
         title: "",
-        text: "The application has been successfully submitted!",
+        text: "The booking has been successfully submitted!",
         icon: "success",
         confirmButtonClass: "btn btn-secondary"
+      }).then(() => {});
+    },
+    addAddon(value, event) {
+      if (event.target.checked) {
+        this.pickedAddon.push(value);
+      } else {
+        const found = this.pickedAddon.find(element => element === value);
+        this.pickedAddon = arrayRemove(this.pickedAddon, found);
+      }
+    },
+    toggleShowAddon() {
+      this.show_addons = !this.show_addons;
+    },
+    searchCustomers(search, loading) {
+      loading(true);
+      this.$store
+        .dispatch("customer/fetchCustomers", {
+          currentPage: 1,
+          itemsPerPage: 10,
+          search
+        })
+        .then(loading(false))
+        .catch(loading(false));
+    },
+    selectPrice() {
+      this.price = this.room_id.price;
+    },
+    initializeRequest(button) {
+      this.removeSpinner(button);
+      // this.popUp();
+      this.initValues();
+      this.$router.push("/bookings");
+    },
+    createBooking() {
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          const obj = {
+            amount_due: this.totalDue,
+            customer_id: this.customer_id.id,
+            room_id: this.room_id.id,
+            start_date: this.start_date,
+            end_date: this.end_date,
+            amount_paid: +this.amount_paid,
+            mode_of_payment: this.mode_of_payment,
+            addons: this.pickedAddon
+          };
+          // set spinner to submit button
+          const submitButton = this.$refs["kt_booking_submit"];
+          this.addSpinner(submitButton);
+
+          this.$store
+            .dispatch("booking/addBooking", obj)
+            .then(() => this.initializeRequest(submitButton))
+            .catch(() => this.removeSpinner(submitButton));
+        }
       });
+    },
+    initValues() {
+      this.customer_id = "";
+      this.room_id = "";
+      this.start_date = "";
+      this.amount_due = "";
+      this.end_date = "";
+      this.amount_paid = "";
+      this.mode_of_payment = "";
+      this.pickedAddon = "";
     }
+  },
+  created() {
+    this.$store.dispatch("addon/fetchAddons", {
+      currentPage: 1,
+      itemsPerPage: 100
+    });
+    this.$store.dispatch("room/fetchRooms");
+    this.$store.dispatch("customer/fetchCustomers", {
+      currentPage: 1,
+      itemsPerPage: 30
+    });
   }
 };
 </script>
