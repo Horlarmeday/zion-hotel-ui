@@ -185,7 +185,6 @@
 </style>
 
 <script>
-import { LOGOUT } from "@/core/services/store/auth.module";
 import KTLayoutQuickSearch from "@/assets/js/layout/extended/quick-search.js";
 import KTOffcanvas from "@/assets/js/components/offcanvas.js";
 
@@ -267,9 +266,6 @@ export default {
   },
   methods: {
     onLogout() {
-      this.$store
-        .dispatch(LOGOUT)
-        .then(() => this.$router.push({ name: "login" }));
     },
     closeOffcanvas() {
       new KTOffcanvas(KTLayoutQuickSearch.getElement()).hide();

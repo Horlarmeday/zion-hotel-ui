@@ -28,15 +28,14 @@
             <tr class="text-left">
               <th class="pl-0" style="width: 30px">
                 <label class="checkbox checkbox-lg checkbox-single mr-2">
-                  <input
-                    type="checkbox"
-                    @input="setCheck($event.target.checked)"
-                  />
+                  <input type="checkbox" />
                   <span></span>
                 </label>
               </th>
-              <th class="pl-0" style="min-width: 120px">Order id</th>
-              <th style="min-width: 110px">Country</th>
+              <th class="pl-0" style="min-width: 120px">Name</th>
+              <th style="min-width: 110px">Price (₦)</th>
+              <th style="min-width: 120px">Category</th>
+              <th style="min-width: 120px">Max Guest</th>
               <th style="min-width: 110px">
                 <span class="text-info">Date</span>
                 <span class="svg-icon svg-icon-sm svg-icon-primary">
@@ -47,17 +46,21 @@
                   <!--end::Svg Icon-->
                 </span>
               </th>
-              <th style="min-width: 120px">Company</th>
               <th style="min-width: 120px">Status</th>
               <th class="pr-0 text-right" style="min-width: 160px">Action</th>
             </tr>
           </thead>
           <tbody>
-            <template v-for="(item, i) in list">
+            <template v-if="!rooms.length">
+              <tr>
+                <td colspan="9" align="center" class="text-muted">No Data</td>
+              </tr>
+            </template>
+            <template v-for="(room, i) in rooms">
               <tr v-bind:key="i">
                 <td class="pl-0 py-6">
                   <label class="checkbox checkbox-lg checkbox-single">
-                    <input type="checkbox" :value="i" :checked="checked" />
+                    <input type="checkbox" />
                     <span></span>
                   </label>
                 </td>
@@ -65,41 +68,46 @@
                   <a
                     href="#"
                     class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg"
-                    >{{ item.order_id }}</a
+                    >{{ room.title }}</a
                   >
                 </td>
                 <td>
                   <span
                     class="text-dark-75 font-weight-bolder d-block font-size-lg"
-                    >{{ item.country }}</span
+                    >{{ Number(room.price).toLocaleString() }}</span
                   >
-                  <span class="text-muted font-weight-bold">{{
-                    item.country_desc
-                  }}</span>
                 </td>
                 <td>
                   <span
                     class="text-info font-weight-bolder d-block font-size-lg"
-                    >{{ item.date }}</span
+                    >{{ room.category.name }}</span
                   >
-                  <span class="text-muted font-weight-bold">{{
-                    item.date_desc
-                  }}</span>
                 </td>
                 <td>
                   <span
                     class="text-dark-75 font-weight-bolder d-block font-size-lg"
-                    >{{ item.company }}</span
+                    >{{ room.max_guest }}</span
                   >
-                  <span class="text-muted font-weight-bold">{{
-                    item.company_desc
-                  }}</span>
+                </td>
+                <td>
+                  <span
+                    class="text-dark-75 font-weight-bolder d-block font-size-lg"
+                    >{{
+                      room.createdAt | moment("ddd, MMM Do YYYY, h:mma")
+                    }}</span
+                  >
                 </td>
                 <td>
                   <span
                     class="label label-lg label-inline"
-                    v-bind:class="`label-light-${item.class}`"
-                    >{{ item.status }}</span
+                    :class="
+                      `${
+                        room.is_occupied
+                          ? 'label-light-success'
+                          : 'label-light-primary'
+                      }`
+                    "
+                    >{{ room.is_occupied ? "Occupied" : "Free" }}</span
                   >
                 </td>
                 <td class="pr-0 text-right">
@@ -107,37 +115,14 @@
                     href="#"
                     class="btn btn-icon btn-light btn-hover-primary btn-sm"
                   >
-                    <span class="svg-icon svg-icon-md svg-icon-primary">
-                      <!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
-                      <inline-svg
-                        src="media/svg/icons/General/Settings-1.svg"
-                      ></inline-svg>
-                      <!--end::Svg Icon-->
-                    </span>
+                    <view-button />
                   </a>
                   <a
                     href="#"
+                    @click="editData(room)"
                     class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
                   >
-                    <span class="svg-icon svg-icon-md svg-icon-primary">
-                      <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Write.svg-->
-                      <inline-svg
-                        src="media/svg/icons/Communication/Write.svg"
-                      ></inline-svg>
-                      <!--end::Svg Icon-->
-                    </span>
-                  </a>
-                  <a
-                    href="#"
-                    class="btn btn-icon btn-light btn-hover-primary btn-sm"
-                  >
-                    <span class="svg-icon svg-icon-md svg-icon-primary">
-                      <!--begin::Svg Icon | path:assets/media/svg/icons/General/Trash.svg-->
-                      <inline-svg
-                        src="media/svg/icons/General/Trash.svg"
-                      ></inline-svg>
-                      <!--end::Svg Icon-->
-                    </span>
+                    <edit-button />
                   </a>
                 </td>
               </tr>
@@ -148,66 +133,26 @@
       <!--end::Table-->
     </div>
     <!--end::Body-->
-    <create-room :displayPrompt="displayPrompt" @closeModal="hideModal" />
+    <create-room
+      :displayPrompt="displayPrompt"
+      :data="roomToEdit"
+      @closeModal="hideModal"
+    />
   </div>
   <!--end::Advance Table Widget 10-->
 </template>
 
 <script>
 import CreateRoom from "./CreateRoom";
+import ViewButton from "../../content/components/ViewButton";
+import EditButton from "../../content/components/EditButton";
 export default {
   name: "RoomsList",
-  components: { CreateRoom },
+  components: { EditButton, ViewButton, CreateRoom },
   data() {
     return {
       displayPrompt: false,
-      roomToEdit: "",
-      list: [
-        {
-          order_id: "56037-XDER",
-          country: "Brasil",
-          country_desc: "Code: BR",
-          date: "05/28/2020",
-          date_desc: "Paid",
-          company: "Intertico",
-          company_desc: "Web, UI/UX Design",
-          class: "primary",
-          status: "Approved"
-        },
-        {
-          order_id: "05822-FXSP",
-          country: "Belarus",
-          country_desc: "Code: BY",
-          date: "02/04/2020",
-          date_desc: "Rejected",
-          company: "Agoda",
-          company_desc: "Houses & Hotels",
-          class: "warning",
-          status: "In Progress"
-        },
-        {
-          order_id: "00347-BCLQ",
-          country: "Phillipines",
-          country_desc: "Code: PH",
-          date: "23/12/2020",
-          date_desc: "Paid",
-          company: "RoadGee",
-          company_desc: "Transportation",
-          class: "success",
-          status: "Success"
-        },
-        {
-          order_id: "4472-QREX",
-          country: "Argentina",
-          country_desc: "Code: AR",
-          date: "17/09/2021",
-          date_desc: "Pending",
-          company: "The Hill",
-          company_desc: "Insurance",
-          class: "danger",
-          status: "Danger"
-        }
-      ]
+      roomToEdit: {}
     };
   },
   methods: {
@@ -217,7 +162,22 @@ export default {
     },
     hideModal() {
       this.displayPrompt = false;
+    },
+    editData(room) {
+      this.roomToEdit = room;
+      this.displayPrompt = true;
     }
+  },
+  computed: {
+    rooms() {
+      return this.$store.state.room.rooms;
+    }
+  },
+  created() {
+    this.$store.dispatch("room/fetchRooms", {
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage
+    });
   }
 };
 </script>

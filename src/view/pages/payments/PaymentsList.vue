@@ -8,6 +8,16 @@
       </h3>
     </div>
     <!--end::Header-->
+    <div class="card-body" style="flex: 0.3">
+      <div class="row">
+        <div class="col-lg-6">
+          <search @search="onHandleSearch" />
+        </div>
+        <div class="col-lg-6">
+          <date-filter @filterbydate="searchByDate" label="Payments" />
+        </div>
+      </div>
+    </div>
     <!--begin::Body-->
     <div class="card-body py-0">
       <!--begin::Table-->
@@ -20,15 +30,15 @@
             <tr class="text-left">
               <th class="pl-0" style="width: 30px">
                 <label class="checkbox checkbox-lg checkbox-single mr-2">
-                  <input
-                    type="checkbox"
-                    @input="setCheck($event.target.checked)"
-                  />
+                  <input type="checkbox" />
                   <span></span>
                 </label>
               </th>
-              <th class="pl-0" style="min-width: 120px">Order id</th>
-              <th style="min-width: 110px">Country</th>
+              <th class="pl-0" style="min-width: 120px">Amount</th>
+              <th style="min-width: 110px">Payment For</th>
+              <th style="min-width: 110px">Mode of Payment</th>
+              <th style="min-width: 120px">Customer</th>
+              <th style="min-width: 120px">Payment Status</th>
               <th style="min-width: 110px">
                 <span class="text-info">Date</span>
                 <span class="svg-icon svg-icon-sm svg-icon-primary">
@@ -39,17 +49,15 @@
                   <!--end::Svg Icon-->
                 </span>
               </th>
-              <th style="min-width: 120px">Company</th>
-              <th style="min-width: 120px">Status</th>
               <th class="pr-0 text-right" style="min-width: 160px">Action</th>
             </tr>
           </thead>
           <tbody>
-            <template v-for="(item, i) in list">
+            <template v-for="(payment, i) in payments">
               <tr v-bind:key="i">
                 <td class="pl-0 py-6">
                   <label class="checkbox checkbox-lg checkbox-single">
-                    <input type="checkbox" :value="i" :checked="checked" />
+                    <input type="checkbox" />
                     <span></span>
                   </label>
                 </td>
@@ -57,41 +65,39 @@
                   <a
                     href="#"
                     class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg"
-                    >{{ item.order_id }}</a
+                    >{{ Number(payment.amount).toLocaleString() }}</a
                   >
                 </td>
                 <td>
                   <span
                     class="text-dark-75 font-weight-bolder d-block font-size-lg"
-                    >{{ item.country }}</span
+                    >{{ payment.booking.room.title }}</span
                   >
-                  <span class="text-muted font-weight-bold">{{
-                    item.country_desc
-                  }}</span>
                 </td>
                 <td>
-                  <span
-                    class="text-info font-weight-bolder d-block font-size-lg"
-                    >{{ item.date }}</span
-                  >
-                  <span class="text-muted font-weight-bold">{{
-                    item.date_desc
+                  <span class="font-weight-bolder d-block font-size-lg">{{
+                    payment.mode_of_payment
                   }}</span>
                 </td>
                 <td>
                   <span
                     class="text-dark-75 font-weight-bolder d-block font-size-lg"
-                    >{{ item.company }}</span
+                    >{{ payment.booking.customer.name }}</span
                   >
-                  <span class="text-muted font-weight-bold">{{
-                    item.company_desc
-                  }}</span>
                 </td>
                 <td>
                   <span
-                    class="label label-lg label-inline"
-                    v-bind:class="`label-light-${item.class}`"
-                    >{{ item.status }}</span
+                    class="label label-inline label-bold"
+                    :class="displayLabel(payment.booking.payment_status)"
+                    >{{ payment.booking.payment_status }}</span
+                  >
+                </td>
+                <td>
+                  <span
+                    class="text-dark-75 font-weight-bolder d-block font-size-lg"
+                    >{{
+                      payment.createdAt | moment("ddd, MMM Do YYYY, h:mma")
+                    }}</span
                   >
                 </td>
                 <td class="pr-0 text-right">
@@ -99,37 +105,7 @@
                     href="#"
                     class="btn btn-icon btn-light btn-hover-primary btn-sm"
                   >
-                    <span class="svg-icon svg-icon-md svg-icon-primary">
-                      <!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
-                      <inline-svg
-                        src="media/svg/icons/General/Settings-1.svg"
-                      ></inline-svg>
-                      <!--end::Svg Icon-->
-                    </span>
-                  </a>
-                  <a
-                    href="#"
-                    class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
-                  >
-                    <span class="svg-icon svg-icon-md svg-icon-primary">
-                      <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Write.svg-->
-                      <inline-svg
-                        src="media/svg/icons/Communication/Write.svg"
-                      ></inline-svg>
-                      <!--end::Svg Icon-->
-                    </span>
-                  </a>
-                  <a
-                    href="#"
-                    class="btn btn-icon btn-light btn-hover-primary btn-sm"
-                  >
-                    <span class="svg-icon svg-icon-md svg-icon-primary">
-                      <!--begin::Svg Icon | path:assets/media/svg/icons/General/Trash.svg-->
-                      <inline-svg
-                        src="media/svg/icons/General/Trash.svg"
-                      ></inline-svg>
-                      <!--end::Svg Icon-->
-                    </span>
+                    <view-button />
                   </a>
                 </td>
               </tr>
@@ -138,6 +114,14 @@
         </table>
       </div>
       <!--end::Table-->
+      <pagination
+        :total-pages="pages"
+        :total="queriedItems"
+        :per-page="perPage"
+        :current-page="currentPage"
+        @pagechanged="onPageChange"
+        @changepagecount="onChangePageCount"
+      />
     </div>
     <!--end::Body-->
   </div>
@@ -145,61 +129,83 @@
 </template>
 
 <script>
+import ViewButton from "../../content/components/ViewButton";
+import Pagination from "../../../common/Pagination";
+import Search from "../../../common/Search";
+import DateFilter from "../../../common/DateFilter";
 export default {
   name: "PaymentsList",
+  components: {DateFilter, Pagination, ViewButton, Search },
   data() {
     return {
       displayPrompt: false,
-      roomToEdit: "",
-      list: [
-        {
-          order_id: "56037-XDER",
-          country: "Brasil",
-          country_desc: "Code: BR",
-          date: "05/28/2020",
-          date_desc: "Paid",
-          company: "Intertico",
-          company_desc: "Web, UI/UX Design",
-          class: "primary",
-          status: "Approved"
-        },
-        {
-          order_id: "05822-FXSP",
-          country: "Belarus",
-          country_desc: "Code: BY",
-          date: "02/04/2020",
-          date_desc: "Rejected",
-          company: "Agoda",
-          company_desc: "Houses & Hotels",
-          class: "warning",
-          status: "In Progress"
-        },
-        {
-          order_id: "00347-BCLQ",
-          country: "Phillipines",
-          country_desc: "Code: PH",
-          date: "23/12/2020",
-          date_desc: "Paid",
-          company: "RoadGee",
-          company_desc: "Transportation",
-          class: "success",
-          status: "Success"
-        },
-        {
-          order_id: "4472-QREX",
-          country: "Argentina",
-          country_desc: "Code: AR",
-          date: "17/09/2021",
-          date_desc: "Pending",
-          company: "The Hill",
-          company_desc: "Insurance",
-          class: "danger",
-          status: "Danger"
-        }
-      ]
+      currentPage: 1,
+      itemsPerPage: 10,
+      start: null,
+      end: null
     };
   },
-  methods: {}
+  methods: {
+    handlePageChange() {
+      this.$store.dispatch("payment/fetchPayments", {
+        currentPage: this.currentPage,
+        itemsPerPage: this.itemsPerPage
+      });
+    },
+    onPageChange(page) {
+      this.currentPage = page;
+      this.handlePageChange();
+    },
+    onHandleSearch(search) {
+      this.$store.dispatch("payment/fetchPayments", {
+        currentPage: 1,
+        itemsPerPage: this.itemsPerPage,
+        search
+      });
+    },
+    onChangePageCount(pagecount) {
+      this.$store.dispatch("payment/fetchPayments", {
+        currentPage: this.currentPage,
+        itemsPerPage: pagecount
+      });
+    },
+    searchByDate(start, end) {
+      (this.start = start), (this.end = end);
+      this.currentPage = 1;
+      this.$store.dispatch("payment/fetchPayments", {
+        currentPage: this.currentPage,
+        itemsPerPage: this.itemsPerPage,
+        start: this.start,
+        end: this.end
+      });
+    },
+    displayLabel(status) {
+      if (status === "Pending") return "label-danger";
+      if (status === "Complete") return "label-success";
+      if (status === "Partial") return "label-warning";
+      return "label-primary";
+    }
+  },
+  computed: {
+    payments() {
+      return this.$store.state.payment.payments;
+    },
+    queriedItems() {
+      return this.$store.state.payment.total;
+    },
+    pages() {
+      return this.$store.state.payment.pages;
+    },
+    perPage() {
+      return this.payments.length;
+    }
+  },
+  created() {
+    this.$store.dispatch("payment/fetchPayments", {
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage
+    });
+  }
 };
 </script>
 
