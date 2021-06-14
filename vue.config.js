@@ -1,6 +1,15 @@
 const path = require("path");
 
 module.exports = {
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:5010",
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  },
   publicPath:
     process.env.NODE_ENV === "production" ? "/metronic/vue/demo4/" : "/",
   configureWebpack: {
@@ -21,7 +30,7 @@ module.exports = {
         options.configFile = path.resolve(__dirname, ".eslintrc.js");
         return options;
       });
-  },
+  }
   // css: {
   //   loaderOptions: {
   //     postcss: {

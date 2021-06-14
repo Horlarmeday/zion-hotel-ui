@@ -1,7 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import VeeValidate from "vee-validate";
 import Notifications from "vue-notification";
 import store from "@/core/services/store";
 
@@ -21,10 +20,12 @@ import "@/core/plugins/inline-svg";
 import "@/core/plugins/apexcharts";
 import "@/core/plugins/metronic";
 import "@mdi/font/css/materialdesignicons.css";
+import "vue-select/dist/vue-select.css";
 
+import VeeValidate from "vee-validate";
+Vue.use(VeeValidate);
 Vue.use(Notifications);
 Vue.use(require("vue-moment"));
-Vue.use(VeeValidate);
 
 new Vue({
   router,
