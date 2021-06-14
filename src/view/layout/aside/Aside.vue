@@ -12,7 +12,7 @@
         <!--begin::Item-->
         <li class="nav-item mb-5" v-b-tooltip.hover.right="'Dashboard'">
           <router-link
-            to="#"
+            to="/dashboard"
             class="nav-link btn btn-icon btn-clean btn-icon-white btn-lg active"
           >
             <i class="flaticon2-protection icon-lg"></i>
@@ -41,7 +41,7 @@
             data-target="#kt_aside_tab_3"
             role="tab"
           >
-            <i class="flaticon2-calendar-6 icon-lg"></i>
+            <i class="flaticon-users-1 icon-lg"></i>
           </router-link>
         </li>
         <!--end::Item-->
@@ -54,7 +54,7 @@
             data-target="#kt_aside_tab_4"
             role="tab"
           >
-            <i class="flaticon2-hourglass-1 icon-lg"></i>
+            <i class="flaticon-price-tag icon-lg"></i>
           </router-link>
         </li>
         <!--end::Item-->
@@ -67,7 +67,7 @@
             data-target="#kt_aside_tab_5"
             role="tab"
           >
-            <i class="flaticon2-analytics-2 icon-lg"></i>
+            <i class="flaticon-home-2 icon-lg"></i>
           </router-link>
         </li>
         <!--end::Item-->
@@ -93,7 +93,7 @@
             data-target="#kt_aside_tab_5"
             role="tab"
           >
-            <i class="flaticon2-gear icon-lg"></i>
+            <i class="flaticon2-graph-1 icon-lg"></i>
           </router-link>
         </li>
         <!--end::Item-->
@@ -106,7 +106,7 @@
             data-target="#kt_aside_tab_6"
             role="tab"
           >
-            <i class="flaticon2-warning icon-lg"></i>
+            <i class="flaticon2-box-1 icon-lg"></i>
           </router-link>
         </li>
         <!--end::Item-->
@@ -114,15 +114,6 @@
       <!--end::Nav-->
     </div>
     <!--end::Nav Wrapper-->
-    <!--begin::Footer-->
-    <div
-      class="aside-footer d-flex flex-column align-items-center flex-column-auto py-8"
-    >
-      <!--begin::Quick Panel-->
-      <KTQuickPanel></KTQuickPanel>
-      <!--end::Quick Panel-->
-    </div>
-    <!--end::Footer-->
   </div>
 </template>
 
@@ -134,14 +125,12 @@
 </style>
 
 <script>
-import KTQuickPanel from "@/view/layout/extras/offcanvas/QuickPanel";
 import KTBrand from "@/view/layout/brand/Brand";
 import KTLayoutAside from "@/assets/js/layout/base/aside.js";
 
 export default {
   name: "Aside",
   components: {
-    KTQuickPanel,
     KTBrand
   },
   mounted() {
