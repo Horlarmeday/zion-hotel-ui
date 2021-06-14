@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="activePrompt" hide-footer title="Room">
+  <b-modal size="lg" v-model="activePrompt" hide-footer title="Room">
     <div class="mb-15">
       <div class="form-group row">
         <label class="col-lg-3 col-form-label">Title</label>
@@ -58,7 +58,12 @@
             data-vv-validate-on="blur"
             class="form-control form-control-sm form-control-solid"
           >
-            <option value=""></option>
+            <option
+              :value="category.id"
+              v-for="category in categories"
+              :key="category.id"
+              >{{ category.name }}</option
+            >
           </select>
           <span class="text-danger text-sm">{{
             errors.first("category")
@@ -106,11 +111,12 @@ export default {
   },
   data() {
     return {
-      category_id: "",
+      room_id: "",
       price: "",
       description: "",
       title: "",
       max_guest: "",
+      category_id: "",
       isDisabled: false
     };
   },
@@ -125,6 +131,9 @@ export default {
       set(value) {
         this.$emit("closeModal", value);
       }
+    },
+    categories() {
+      return this.$store.state.category.categories;
     }
   },
   watch: {
@@ -134,9 +143,20 @@ export default {
         this.initValues();
         this.$validator.reset();
       } else {
-        const { id, name } = JSON.parse(JSON.stringify(this.data));
-        this.category_id = id;
-        this.name = name;
+        const {
+          id,
+          title,
+          description,
+          price,
+          max_guest,
+          category_id
+        } = JSON.parse(JSON.stringify(this.data));
+        this.room_id = id;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.max_guest = max_guest;
+        this.category_id = category_id;
       }
     }
   },
@@ -165,23 +185,27 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           const obj = {
-            insurance_id: this.insurance_id,
-            name: this.name,
-            description: this.description
+            id: this.room_id,
+            title: this.title,
+            price: +this.price,
+            max_guest: +this.max_guest,
+            description: this.description,
+            category_id: this.category_id
           };
           // set spinner to submit button
           const submitButton = this.$refs["kt_room_submit"];
           this.addSpinner(submitButton);
 
-          if (this.category_id && this.category_id >= 0) {
+          if (this.room_id) {
             this.$store
-              .dispatch("insurance/updateInsurance", obj)
+              .dispatch("room/updateRoom", obj)
               .then(() => this.initializeRequest(submitButton))
               .catch(() => this.removeSpinner(submitButton));
           } else {
-            delete obj.insurance_id;
+            delete obj.id;
+            console.log(obj)
             this.$store
-              .dispatch("insurance/addInsurance", obj)
+              .dispatch("room/addRoom", obj)
               .then(() => this.initializeRequest(submitButton))
               .catch(() => this.removeSpinner(submitButton));
           }
@@ -195,7 +219,11 @@ export default {
       this.description = "";
       this.title = "";
       this.max_guest = "";
+      this.room_id = "";
     }
+  },
+  created() {
+    this.$store.dispatch("category/fetchCategories");
   }
 };
 </script>

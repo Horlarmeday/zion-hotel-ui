@@ -97,12 +97,11 @@
                   <input
                     v-validate="'required'"
                     data-vv-validate-on="blur"
-                    type="password"
+                    type="text"
                     class="form-control form-control-solid"
                     placeholder="Enter address"
                     name="address"
                     v-model="address"
-                    minlength="8"
                   />
                   <span class="text-danger text-sm">{{
                     errors.first("address")
@@ -115,6 +114,7 @@
                   class="btn btn-primary mr-2"
                   @click="createStaff"
                   ref="kt_staff_submit"
+                  :disabled="isDisabled"
                 >
                   Submit
                 </button>
@@ -164,8 +164,8 @@ export default {
 
     initializeRequest(button) {
       this.removeSpinner(button);
-      this.$emit("closeModal");
       this.initValues();
+      this.$router.push("/staffs");
     },
 
     createStaff() {
@@ -184,7 +184,7 @@ export default {
           this.addSpinner(submitButton);
 
           this.$store
-            .dispatch("insurance/addInsurance", obj)
+            .dispatch("staff/addStaff", obj)
             .then(() => this.initializeRequest(submitButton))
             .catch(() => this.removeSpinner(submitButton));
         }

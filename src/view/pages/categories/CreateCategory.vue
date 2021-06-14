@@ -1,5 +1,13 @@
 <template>
-  <b-modal v-model="activePrompt" hide-footer title="Category">
+  <b-modal
+    v-model="activePrompt"
+    hide-footer
+    :title="
+      Object.entries(this.data).length === 0
+        ? 'Create Category'
+        : 'Update Category'
+    "
+  >
     <div class="mb-15">
       <div class="form-group row">
         <label class="col-lg-3 col-form-label">Name</label>
@@ -23,7 +31,9 @@
       :disabled="isDisabled"
       ref="kt_category_submit"
     >
-      Submit
+      {{ Object.entries(this.data).length === 0
+      ? 'Submit'
+      : 'Update' }}
     </button>
   </b-modal>
 </template>
@@ -98,23 +108,22 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           const obj = {
-            insurance_id: this.insurance_id,
-            name: this.name,
-            description: this.description
+            id: this.category_id,
+            name: this.name
           };
           // set spinner to submit button
           const submitButton = this.$refs["kt_category_submit"];
           this.addSpinner(submitButton);
 
-          if (this.category_id && this.category_id >= 0) {
+          if (this.category_id) {
             this.$store
-              .dispatch("insurance/updateInsurance", obj)
+              .dispatch("category/updateCategory", obj)
               .then(() => this.initializeRequest(submitButton))
               .catch(() => this.removeSpinner(submitButton));
           } else {
-            delete obj.insurance_id;
+            delete obj.id;
             this.$store
-              .dispatch("insurance/addInsurance", obj)
+              .dispatch("category/addCategory", obj)
               .then(() => this.initializeRequest(submitButton))
               .catch(() => this.removeSpinner(submitButton));
           }

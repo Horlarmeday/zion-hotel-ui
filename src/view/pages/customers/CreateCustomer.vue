@@ -66,12 +66,11 @@
                   <input
                     v-validate="'required'"
                     data-vv-validate-on="blur"
-                    type="password"
+                    type="text"
                     class="form-control form-control-solid"
                     placeholder="Enter address"
                     name="address"
                     v-model="address"
-                    minlength="8"
                   />
                   <span class="text-danger text-sm">{{
                     errors.first("address")
@@ -83,6 +82,7 @@
                   type="button"
                   class="btn btn-primary mr-2"
                   @click="createCustomer"
+                  :disabled="isDisabled"
                   ref="kt_customer_submit"
                 >
                   Submit
@@ -131,8 +131,8 @@ export default {
 
     initializeRequest(button) {
       this.removeSpinner(button);
-      this.$emit("closeModal");
       this.initValues();
+      this.$router.push("/customers");
     },
 
     createCustomer() {
@@ -149,7 +149,7 @@ export default {
           this.addSpinner(submitButton);
 
           this.$store
-            .dispatch("insurance/addInsurance", obj)
+            .dispatch("customer/addCustomer", obj)
             .then(() => this.initializeRequest(submitButton))
             .catch(() => this.removeSpinner(submitButton));
         }
