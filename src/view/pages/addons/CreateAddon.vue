@@ -84,9 +84,10 @@ export default {
         this.initValues();
         this.$validator.reset();
       } else {
-        const { id, name } = JSON.parse(JSON.stringify(this.data));
-        this.category_id = id;
+        const { id, name, price } = JSON.parse(JSON.stringify(this.data));
+        this.addon_id = id;
         this.name = name;
+        this.price = price;
       }
     }
   },
@@ -114,23 +115,23 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           const obj = {
-            insurance_id: this.insurance_id,
+            id: this.addon_id,
             name: this.name,
-            description: this.description
+            price: +this.price
           };
           // set spinner to submit button
           const submitButton = this.$refs["kt_addon_submit"];
           this.addSpinner(submitButton);
 
-          if (this.category_id && this.category_id >= 0) {
+          if (this.addon_id) {
             this.$store
-              .dispatch("insurance/updateInsurance", obj)
+              .dispatch("addon/updateAddon", obj)
               .then(() => this.initializeRequest(submitButton))
               .catch(() => this.removeSpinner(submitButton));
           } else {
-            delete obj.insurance_id;
+            delete obj.id;
             this.$store
-              .dispatch("insurance/addInsurance", obj)
+              .dispatch("addon/addAddon", obj)
               .then(() => this.initializeRequest(submitButton))
               .catch(() => this.removeSpinner(submitButton));
           }
@@ -138,11 +139,9 @@ export default {
       });
     },
     initValues() {
-      this.category_id = "";
+      this.addon_id = "";
       this.price = "";
-      this.description = "";
-      this.title = "";
-      this.max_guest = "";
+      this.name = "";
     }
   }
 };
