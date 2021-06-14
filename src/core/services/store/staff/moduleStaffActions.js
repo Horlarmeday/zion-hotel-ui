@@ -1,18 +1,16 @@
 import axios from "../../../../axios";
 
 export default {
-  /**
-   * EMPLOYEE
-   */
-  addEmployee({ commit }, employee) {
+  addStaff({ commit }, staff) {
     return new Promise((resolve, reject) => {
       axios
-        .post("/staffs/create", employee)
+        .post("/users", staff)
         .then(response => {
           commit(
-            "ADD_EMPLOYEE",
-            Object.assign(employee, {
-              id: response.data.data.id
+            "ADD_STAFF",
+            Object.assign(staff, {
+              id: response.data.data.id,
+              createdAt: response.data.data.createdAt
             })
           );
           resolve(response);
@@ -22,10 +20,10 @@ export default {
         });
     });
   },
-  fetchEmployees({ commit }, payload) {
+  fetchStaffs({ commit }, payload) {
     return new Promise((resolve, reject) => {
       axios
-        .get("/staffs/get", {
+        .get("/users", {
           params: {
             currentPage: payload.currentPage,
             pageLimit: payload.itemsPerPage,
@@ -35,8 +33,8 @@ export default {
           }
         })
         .then(response => {
-          commit("SET_EMPLOYEES", response.data.data.docs);
-          commit("SET_EMPLOYEES_TOTAL", response.data.data.total);
+          commit("SET_STAFFS", response.data.data.docs);
+          commit("SET_STAFFS_TOTAL", response.data.data.total);
           commit("SET_NUMB_PAGES", response.data.data.pages);
           resolve(response);
         })
@@ -45,12 +43,12 @@ export default {
         });
     });
   },
-  fetchEmployee({ commit }, employeeId) {
+  fetchStaff({ commit }, staffId) {
     return new Promise((resolve, reject) => {
       axios
-        .get(`/staffs/${employeeId}`)
+        .get(`/users/${staffId}`)
         .then(response => {
-          commit("SET_EMPLOYEE", response.data.data);
+          commit("SET_STAFF", response.data.data);
           resolve(response);
         })
         .catch(error => {
@@ -59,12 +57,12 @@ export default {
     });
   },
 
-  updateEmployee({ commit }, employee) {
+  updateStaff({ commit }, staff, staffId) {
     return new Promise((resolve, reject) => {
       axios
-        .put(`/staffs`, employee)
+        .put(`/users/${staffId}`, staff)
         .then(response => {
-          commit("UPDATE_EMPLOYEE", response.data.data);
+          commit("UPDATE_STAFF", response.data.data);
           resolve(response);
         })
         .catch(error => {
