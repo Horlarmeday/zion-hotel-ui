@@ -1,7 +1,7 @@
 // axios
 import axios from "axios";
 import store from "./core/services/store/index";
-import { notifyError, notifySuccess } from "./common/notification";
+import { notifyError, notifySuccess } from "./common/Notification";
 
 const token = localStorage.getItem("zion-ticket");
 
