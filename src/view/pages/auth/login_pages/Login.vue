@@ -86,8 +86,8 @@
                   label-for="example-input-2"
                 >
                   <input
-                    data-vv-validate-on="blur"
                     v-validate="'required|min:6'"
+                    data-vv-validate-on="blur"
                     class="form-control form-control-solid h-auto py-7 px-6 rounded-lg"
                     type="password"
                     name="password"
@@ -109,6 +109,7 @@
               >
               <div class="pb-lg-0 pb-5">
                 <button
+                  type="button"
                   ref="kt_login_signin_submit"
                   class="btn btn-primary btn-block font-weight-bolder font-size-h6 px-15 py-4 my-3 mr-3"
                   :disabled="isDisabled"
@@ -137,8 +138,6 @@
               </div>
               <div class="form-group">
                 <input
-                  v-validate="'required|min:11|max:11'"
-                  data-vv-validate-on="blur"
                   class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                   type="text"
                   placeholder="Phone"
@@ -152,7 +151,8 @@
                 <button
                   type="button"
                   class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-4"
-                @click="onSubmitForgot">
+                  @click="onSubmitForgot"
+                >
                   Submit
                 </button>
                 <button
@@ -189,19 +189,20 @@ export default {
       state: "signin",
       // Remove this dummy login info
       form: {
-        username: "admin@demo.com",
-        password: "demo"
+        username: "",
+        password: ""
       },
       phone: "",
       isDisabled: false
     };
   },
   computed: {
+    isFormValid() {
+      return !this.errors.any() && this.username !== "" && this.password !== "";
+    },
+
     backgroundImage() {
       return process.env.BASE_URL + "media/svg/hotel/hotelier.png";
-    },
-    isFormValid() {
-      return !this.errors.any() && this.username && this.password;
     }
   },
   methods: {
@@ -223,6 +224,11 @@ export default {
       );
     },
 
+    addSpinner(button) {
+      this.isDisabled = true;
+      button.classList.add("spinner", "spinner-light", "spinner-right");
+    },
+
     onSubmitLogin() {
       this.$validator.validateAll().then(result => {
         if (result) {
@@ -231,13 +237,8 @@ export default {
 
           // set spinner to submit button
           const submitButton = this.$refs["kt_login_signin_submit"];
-          this.isDisabled = true;
-          submitButton.classList.add(
-            "spinner",
-            "spinner-light",
-            "spinner-right"
-          );
 
+          this.addSpinner(submitButton);
           this.$store
             .dispatch("auth/login", { username, password })
             .then(() => {

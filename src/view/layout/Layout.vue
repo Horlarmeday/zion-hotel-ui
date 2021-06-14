@@ -85,9 +85,6 @@ export default {
   },
   mounted() {
     // check if current user is authenticated
-    if (!this.isAuthenticated) {
-      this.$router.push({ name: "login" });
-    }
 
     // Simulate the delay page loading
     setTimeout(() => {
@@ -97,7 +94,6 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "isAuthenticated",
       "breadcrumbs",
       "pageTitle",
       "layoutConfig"
