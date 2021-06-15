@@ -6,7 +6,7 @@ export default {
       axios
         .post("/bookings", booking)
         .then(response => {
-          commit("ADD_BOOKING", booking);
+          commit("ADD_BOOKING", response.data.data);
           resolve(response);
         })
         .catch(error => {

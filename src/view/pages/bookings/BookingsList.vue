@@ -89,13 +89,7 @@
                 <td>
                   <span
                     class="label label-lg label-inline"
-                    :class="
-                      `${
-                        booking.status === 'Checked-Out'
-                          ? 'label-light-danger'
-                          : 'label-light-success'
-                      }`
-                    "
+                    :class="displayLabel(booking.status)"
                     >{{ booking.status }}</span
                   >
                 </td>
@@ -198,6 +192,12 @@ export default {
         currentPage: this.currentPage,
         itemsPerPage: pagecount
       });
+    },
+    displayLabel(status) {
+      if (status === "Pending") return "label-warning";
+      if (status === "Checked-Out") return "label-primary";
+      if (status === "Checked-In") return "label-success";
+      return "label-dark";
     }
   },
   created() {
