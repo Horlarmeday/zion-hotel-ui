@@ -546,9 +546,8 @@ export default {
     },
     initializeRequest(button) {
       this.removeSpinner(button);
-      // this.popUp();
       this.initValues();
-      this.$router.push("/bookings");
+      this.$router.push(`/bookings`);
     },
     createBooking() {
       this.$validator.validateAll().then(result => {
