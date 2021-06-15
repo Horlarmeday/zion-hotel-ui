@@ -1,4 +1,4 @@
-# metronic-vue
+# Zion Hotel
 
 ## Project setup
 ```
