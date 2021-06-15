@@ -35,6 +35,11 @@
             </tr>
           </thead>
           <tbody>
+            <template v-if="!departures.length">
+              <tr>
+                <td colspan="9" align="center" class="text-muted">No Data</td>
+              </tr>
+            </template>
             <template v-for="(departure, i) in departures">
               <tr v-bind:key="i">
                 <td class="pl-0 py-6">

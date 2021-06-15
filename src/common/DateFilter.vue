@@ -21,7 +21,6 @@
         </button>
       </div>
     </div>
-    <span class="form-text text-muted">Select Date Range</span>
   </div>
 </template>
 
