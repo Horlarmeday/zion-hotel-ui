@@ -32,7 +32,7 @@
                 <div class="form-group">
                   <label>Email address:</label>
                   <input
-                    v-validate="'required'"
+                    v-validate="'optional'"
                     data-vv-validate-on="blur"
                     type="email"
                     class="form-control form-control-solid"

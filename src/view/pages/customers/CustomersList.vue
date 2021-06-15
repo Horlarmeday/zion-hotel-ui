@@ -77,7 +77,7 @@
                 </td>
                 <td>
                   <span class="font-weight-bolder d-block font-size-lg">{{
-                    customer.email
+                    customer.email || "None"
                   }}</span>
                 </td>
                 <td>
