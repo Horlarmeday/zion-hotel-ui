@@ -4,7 +4,7 @@
     <!--begin::Header-->
     <div class="card-header border-0 py-5">
       <h3 class="card-title align-items-start flex-column">
-        <span class="card-label font-weight-bolder text-dark">Addons</span>
+        <span class="card-label font-weight-bolder text-dark">Services</span>
       </h3>
       <div class="card-toolbar">
         <a

@@ -15,7 +15,7 @@
       </div>
     </div>
     <!--end::Header-->
-    <search @search="onHandleSearch" />
+    <search @search="onHandleSearch" /> <br/> <br/>
     <!--begin::Body-->
     <div class="card-body py-0">
       <!--begin::Table-->

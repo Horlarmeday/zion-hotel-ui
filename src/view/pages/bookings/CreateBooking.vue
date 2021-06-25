@@ -171,7 +171,7 @@
                           @click="toggleShowAddon"
                         >
                           <i class="flaticon2-plus-1 text-primary mr-2" />
-                          Addons</a
+                          Services</a
                         >
                         <div v-if="show_addons" class="checkbox-inline mt-2">
                           <label

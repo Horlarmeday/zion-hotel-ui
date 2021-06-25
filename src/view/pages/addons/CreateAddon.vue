@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="activePrompt" hide-footer title="Addon">
+  <b-modal v-model="activePrompt" hide-footer title="Service">
     <div class="mb-15">
       <div class="form-group row">
         <label class="col-lg-3 col-form-label">Name</label>

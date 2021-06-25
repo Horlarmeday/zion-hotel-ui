@@ -32,17 +32,12 @@
                 <div class="form-group">
                   <label>Email address:</label>
                   <input
-                    v-validate="'optional'"
-                    data-vv-validate-on="blur"
                     type="email"
                     class="form-control form-control-solid"
                     placeholder="Enter email"
                     v-model="email"
                     name="email"
                   />
-                  <span class="text-danger text-sm">{{
-                    errors.first("email")
-                  }}</span>
                 </div>
                 <div class="form-group">
                   <label>Phone</label>
