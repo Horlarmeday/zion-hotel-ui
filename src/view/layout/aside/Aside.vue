@@ -98,7 +98,7 @@
         </li>
         <!--end::Item-->
         <!--begin::Item-->
-        <li class="nav-item mb-5" v-b-tooltip.hover.right="'Addons'">
+        <li class="nav-item mb-5" v-b-tooltip.hover.right="'Services'">
           <router-link
             to="/addons"
             class="nav-link btn btn-icon btn-icon-white btn-lg"
