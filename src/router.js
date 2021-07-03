@@ -113,6 +113,14 @@ const router = new Router({
           meta: {
             requiresAuth: true
           }
+        },
+        {
+          path: "/invoice/:bookingId",
+          name: "viewinvoice",
+          component: () => import("@/view/pages/bookings/ViewInvoice.vue"),
+          meta: {
+            requiresAuth: true
+          }
         }
       ]
     },

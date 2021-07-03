@@ -9,5 +9,9 @@ export default {
 
   SET_NUMB_PAGES(state, pages) {
     state.pages = pages;
+  },
+
+  SET_PAYMENT(state, payment) {
+    state.payment = payment;
   }
 };

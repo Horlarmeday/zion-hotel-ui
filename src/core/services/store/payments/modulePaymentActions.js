@@ -23,5 +23,19 @@ export default {
           reject(error);
         });
     });
+  },
+
+  fetchPaymentByBooking({ commit }, bookingId) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`/accounts/${bookingId}`)
+        .then(response => {
+          commit("SET_PAYMENT", response.data.data);
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   }
 };
