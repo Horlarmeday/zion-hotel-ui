@@ -41,7 +41,7 @@
         <!--begin::Footer-->
         <KTFooter></KTFooter>
         <!--end::Footer-->
-        <KTStickyToolbar v-if="toolbarDisplay"></KTStickyToolbar>
+<!--        <KTStickyToolbar v-if="toolbarDisplay"></KTStickyToolbar>-->
         <KTScrollTop></KTScrollTop>
       </div>
     </div>
@@ -57,7 +57,7 @@ import Loader from "@/view/layout/content/Loader";
 import KTHeader from "@/view/layout/header/Header";
 import KTSubheader from "@/view/layout/subheader/Subheader";
 import KTFooter from "@/view/layout/footer/Footer";
-import KTStickyToolbar from "@/view/layout/extras/StickyToolbar.vue";
+// import KTStickyToolbar from "@/view/layout/extras/StickyToolbar.vue";
 import KTScrollTop from "@/view/layout/extras/ScrollTop";
 import {
   ADD_BODY_CLASSNAME,
@@ -73,7 +73,7 @@ export default {
     KTHeader,
     KTFooter,
     KTSubheader,
-    KTStickyToolbar,
+    // KTStickyToolbar,
     KTScrollTop
   },
   beforeMount() {

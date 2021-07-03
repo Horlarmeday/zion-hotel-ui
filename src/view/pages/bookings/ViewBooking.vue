@@ -11,6 +11,14 @@
           >
         </h3>
       </div>
+      <div>
+        <router-link
+          :to="`/invoice/${bookingId}`"
+          class="btn btn-outline-primary"
+          v-if="booking.status === 'Checked-In'"
+          >Invoice</router-link
+        >
+      </div>
     </div>
     <!--end::Header-->
     <!--begin::Body-->

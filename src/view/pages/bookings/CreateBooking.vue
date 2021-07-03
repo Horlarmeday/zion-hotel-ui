@@ -304,9 +304,9 @@
                                     {{ room_id.title }}
                                   </td>
                                   <td
-                                    class="text-primary pr-0 pt-7 text-right align-middle"
+                                    class="pr-0 pt-7 text-right align-middle"
                                   >
-                                    {{ room_id.price.toLocaleString() }}
+                                    ₦{{ room_id.price.toLocaleString() }}
                                   </td>
                                 </tr>
                                 <p v-if="pickedAddon.length">Addons</p>
@@ -321,9 +321,9 @@
                                     {{ add.name }}
                                   </td>
                                   <td
-                                    class="text-primary pr-0 pt-7 text-right align-middle"
+                                    class="pr-0 pt-7 text-right align-middle"
                                   >
-                                    {{ add.price.toLocaleString() }}
+                                    ₦{{ add.price.toLocaleString() }}
                                   </td>
                                 </tr>
                               </tbody>
