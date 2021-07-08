@@ -18,6 +18,9 @@
 
 // Main demo style scss
 @import "assets/sass/style.vue";
+.aside {
+  background-color: #d9b03f;
+}
 
 // Check documentation for RTL css
 // Update HTML with RTL attribute at public/index.html
