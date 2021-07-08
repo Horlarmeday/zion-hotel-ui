@@ -16,8 +16,8 @@
         <div class="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
           <a href="#" class="text-center mb-10">
             <img
-              src="media/logos/logo-letter-1.png"
-              class="max-h-70px"
+              src="media/logos/zion-logo-head.png"
+              class="max-h-90px"
               alt=""
             />
           </a>
