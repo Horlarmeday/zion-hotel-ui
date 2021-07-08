@@ -5,7 +5,7 @@
   >
     <!--begin::Logo-->
     <router-link to="/">
-      <img :src="siteLogo()" alt="Logo" class="max-h-30px" />
+      <img :src="siteLogo()" alt="Logo" class="max-h-50px" />
     </router-link>
     <!--end::Logo-->
   </div>

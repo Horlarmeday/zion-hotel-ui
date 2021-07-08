@@ -8,7 +8,8 @@ module.exports = {
         changeOrigin: true,
         secure: false
       }
-    }
+    },
+    open: true
   },
   publicPath:
     process.env.NODE_ENV === "production" ? "/metronic/vue/demo4/" : "/",

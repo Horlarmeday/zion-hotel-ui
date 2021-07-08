@@ -4,11 +4,11 @@
     "layout": "default",
     "body": {
     },
-    "logo": "media/logos/logo-letter-9.png"
+    "logo": "media/logos/zion-logo-loader.png"
   },
   "loader": {
     "type": "spinner-logo",
-    "logo": "media/logos/logo-letter-1.png",
+    "logo": "media/logos/zion-logo-head.png",
     "message": "Please wait..."
   },
   "breakpoints": {

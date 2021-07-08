@@ -12,12 +12,14 @@
             <div class="d-flex flex-column align-items-md-end px-0">
               <!--begin::Logo-->
               <a href="#" class="mb-5">
-                <img src="/media/logos/logo-letter-1.png" alt="" width="50" />
+                <img src="/media/zion-logo.png" alt="" width="220" />
               </a>
               <!--end::Logo-->
               <span class="d-flex flex-column align-items-md-end opacity-70">
-                <span>Cecilia Chapman, 711-2880 Nulla St, Mankato</span>
-                <span>Taraba 96522</span>
+                <span>Comfort Street, off Danbaba D, Suntai Way, Dinyavoh, Jalingo,</span>
+                <span>Taraba State.</span>
+                <span>info@zsh.com.ng</span>
+                <span>+2347061713564</span>
               </span>
             </div>
           </div>
