@@ -18,6 +18,9 @@
           v-if="booking.status === 'Checked-In'"
           >Invoice</router-link
         >
+        <button class="btn btn-primary ml-2" @click="addNewData">
+          Add Services
+        </button>
       </div>
     </div>
     <!--end::Header-->
@@ -141,17 +144,21 @@
       </button>
     </div>
     <!--end::Footer-->
+    <add-services :displayPrompt="displayPrompt" @closeModal="hideModal" />
   </div>
   <!--end::Card-->
 </template>
 
 <script>
+import AddServices from "./AddServices";
 export default {
   name: "ViewBooking",
+  components: { AddServices },
   data() {
     return {
       isDisabled: false,
-      bookingId: this.$route.params.bookingId
+      bookingId: this.$route.params.bookingId,
+      displayPrompt: false
     };
   },
   computed: {
@@ -165,6 +172,12 @@ export default {
       if (status === "Complete") return "label-success";
       if (status === "Partial") return "label-warning";
       return "label-primary";
+    },
+    addNewData() {
+      this.displayPrompt = true;
+    },
+    hideModal() {
+      this.displayPrompt = false;
     },
     initializeRequest(button) {
       this.removeSpinner(button);

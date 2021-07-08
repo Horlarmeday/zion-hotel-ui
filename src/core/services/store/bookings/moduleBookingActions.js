@@ -79,5 +79,19 @@ export default {
           reject(error);
         });
     });
+  },
+
+  addBookingAddons({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(`/bookings/addons/${payload.bookingId}`, payload.addons)
+        .then(response => {
+          commit("SET_BOOKING", response.data.data);
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   }
 };

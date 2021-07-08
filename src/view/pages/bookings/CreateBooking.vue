@@ -511,6 +511,7 @@ export default {
         "spinner-right"
       );
     },
+
     popUp() {
       Swal.fire({
         title: "",
