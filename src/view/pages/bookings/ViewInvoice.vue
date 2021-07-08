@@ -69,16 +69,16 @@
                     ₦{{ Number(booking.room.price).toLocaleString() }}
                   </td>
                 </tr>
-                <p v-if="booking.addons.length">Addons</p>
+                <p v-if="booking.addons.length">Services</p>
                 <tr
                   class="font-weight-boldest border-bottom-0"
                   v-for="(add, i) in booking.addons"
                   :key="i"
                 >
-                  <td class="border-0 pl-0 pt-7 d-flex align-items-center">
+                  <td class="border-0 pl-0 d-flex align-items-center">
                     {{ add.name }}
                   </td>
-                  <td class="pr-0 pt-7 text-right align-middle">
+                  <td class="pr-0 text-right align-middle">
                     ₦{{ Number(add.price).toLocaleString() }}
                   </td>
                 </tr>

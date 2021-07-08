@@ -113,7 +113,7 @@
       </div>
       <div v-if="booking.addons">
         <hr />
-        <div><strong>Addons</strong></div>
+        <div><strong>Services</strong></div>
         <ul>
           <li v-for="addon in booking.addons" :key="addon.id">
             {{ addon.name }} ({{ addon.price }})
